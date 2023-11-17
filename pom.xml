@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.dnsouzadev</groupId>
 	<artifactId>agenda</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>f
 	<name>agenda</name>
 	<description>Projeto para agendamento de pacientes</description>
 	<properties>
@@ -46,6 +46,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
 		</dependency>
 	</dependencies>
 
