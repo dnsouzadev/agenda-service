@@ -5,10 +5,9 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +18,7 @@ import com.dnsouzadev.agenda.api.response.AgendaResponse;
 import com.dnsouzadev.agenda.domain.entity.Agenda;
 import com.dnsouzadev.agenda.domain.service.AgendaService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class AgendaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AgendaResponse> buscarPorId(Long id) {
+    public ResponseEntity<AgendaResponse> buscarPorId(@PathVariable Long id) {
         Optional<Agenda> optAgenda = service.buscarPorId(id);
 
         if (optAgenda.isEmpty()) {
@@ -51,7 +51,7 @@ public class AgendaController {
     }
 
     @PostMapping
-    public ResponseEntity<AgendaResponse> salvar(@RequestBody AgendaRequest agenda) {
+    public ResponseEntity<AgendaResponse> salvar(@Valid @RequestBody AgendaRequest agenda) {
         Agenda agendaSalva = service.salvar(mapper.toAgenda(agenda));
         AgendaResponse agendaResponse = mapper.toAgendaResponse(agendaSalva);
 
