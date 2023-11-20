@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dnsouzadev.agenda.api.mapper.PacienteMapper;
+import com.dnsouzadev.agenda.api.request.PacienteRequest;
+import com.dnsouzadev.agenda.api.response.PacienteResponse;
 import com.dnsouzadev.agenda.domain.entity.Paciente;
 import com.dnsouzadev.agenda.domain.service.PacienteService;
 
@@ -27,9 +30,13 @@ public class PacienteController {
     private final PacienteService service;
 
     @PostMapping
-    public ResponseEntity<Paciente> salvar(@RequestBody Paciente paciente) {
-        Paciente salvar = service.salvar(paciente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(salvar);
+    public ResponseEntity<PacienteResponse> salvar(@RequestBody PacienteRequest request) {
+
+        Paciente paciente = PacienteMapper.toPaciente(request);
+        Paciente pacienteSalvo = service.salvar(paciente);
+        PacienteResponse pacienteResponse = PacienteMapper.toPacienteResponse(pacienteSalvo);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteResponse);
     }
 
     @GetMapping
