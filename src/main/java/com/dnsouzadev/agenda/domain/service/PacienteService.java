@@ -12,8 +12,6 @@ import com.dnsouzadev.agenda.domain.repository.PacienteRepository;
 
 import lombok.RequiredArgsConstructor;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,8 +29,9 @@ public class PacienteService {
             }
         });
 
-        if (existCpf.get()) {
+        if (existCpf.get() && paciente.getId() == null) {
             throw new BusinessException("Já existe um paciente cadastrado com este CPF.");
+
         }
 
         return repository.save(paciente);
