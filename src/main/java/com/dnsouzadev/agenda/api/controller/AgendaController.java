@@ -1,5 +1,9 @@
 package com.dnsouzadev.agenda.api.controller;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dnsouzadev.agenda.api.mapper.AgendaMapper;
 import com.dnsouzadev.agenda.api.request.AgendaRequest;
 import com.dnsouzadev.agenda.api.response.AgendaResponse;
+import com.dnsouzadev.agenda.domain.entity.Agenda;
 import com.dnsouzadev.agenda.domain.service.AgendaService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,30 +27,34 @@ import lombok.RequiredArgsConstructor;
 public class AgendaController {
 
     private final AgendaService service;
+    private final AgendaMapper mapper;
 
     @GetMapping
-    public ResponseEntity<AgendaResponse> listarTodos() {
-        return null;
+    public ResponseEntity<List<AgendaResponse>> listarTodos() {
+        List<Agenda> agendas = service.listarTodos();
+        List<AgendaResponse> agendaResponseList = mapper.toAgendaResponseList(agendas);
+
+        return ResponseEntity.ok(agendaResponseList);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AgendaResponse> buscarPorId(Long id) {
-        return null;
+        Optional<Agenda> optAgenda = service.buscarPorId(id);
+
+        if (optAgenda.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        AgendaResponse agendaResponse = mapper.toAgendaResponse(optAgenda.get());
+
+        return ResponseEntity.ok(agendaResponse);
     }
 
     @PostMapping
     public ResponseEntity<AgendaResponse> salvar(@RequestBody AgendaRequest agenda) {
-        return null;
-    }
+        Agenda agendaSalva = service.salvar(mapper.toAgenda(agenda));
+        AgendaResponse agendaResponse = mapper.toAgendaResponse(agendaSalva);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<AgendaResponse> atualizar(Long id, AgendaResponse agenda) {
-        return null;
+        return ResponseEntity.status(HttpStatus.CREATED).body(agendaResponse);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(Long id) {
-        return null;
-    }
-
 }
