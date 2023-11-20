@@ -22,6 +22,7 @@ import com.dnsouzadev.agenda.api.response.PacienteResponse;
 import com.dnsouzadev.agenda.domain.entity.Paciente;
 import com.dnsouzadev.agenda.domain.service.PacienteService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -39,7 +40,7 @@ public class PacienteController {
     }
 
     @PostMapping
-    public ResponseEntity<PacienteResponse> salvar(@RequestBody PacienteRequest request) {
+    public ResponseEntity<PacienteResponse> salvar(@Valid @RequestBody PacienteRequest request) {
 
         Paciente paciente = mapper.toPaciente(request);
         Paciente pacienteSalvo = service.salvar(paciente);
@@ -63,11 +64,11 @@ public class PacienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<List<PacienteResponse>> atualizar(@PathVariable Long id, @RequestBody PacienteRequest request) {
+    public ResponseEntity<PacienteResponse> atualizar(@PathVariable Long id, @Valid @RequestBody PacienteRequest request) {
         Paciente paciente = mapper.toPaciente(request);
         Paciente pacienteSalvo = service.alterar(id, paciente);
         PacienteResponse pacienteResponse = mapper.toPacienteResponse(pacienteSalvo);
-        return ResponseEntity.status(HttpStatus.OK).body(List.of(pacienteResponse));
+        return ResponseEntity.status(HttpStatus.OK).body(pacienteResponse);
     }
 
     @DeleteMapping("/{id}")
