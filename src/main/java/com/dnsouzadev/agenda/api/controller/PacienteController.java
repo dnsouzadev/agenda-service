@@ -3,6 +3,7 @@ package com.dnsouzadev.agenda.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,25 +17,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dnsouzadev.agenda.api.mapper.PacienteMapper;
 import com.dnsouzadev.agenda.api.request.PacienteRequest;
+import com.dnsouzadev.agenda.api.response.PacienteCompletoResponse;
 import com.dnsouzadev.agenda.api.response.PacienteResponse;
 import com.dnsouzadev.agenda.domain.entity.Paciente;
 import com.dnsouzadev.agenda.domain.service.PacienteService;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+
 @RestController
 @RequestMapping("/paciente")
 public class PacienteController {
 
+
     private final PacienteService service;
+    private final PacienteMapper mapper;
+
+    public PacienteController(PacienteService service, PacienteMapper mapper) {
+        this.service = service;
+        this.mapper = mapper;
+    }
 
     @PostMapping
     public ResponseEntity<PacienteResponse> salvar(@RequestBody PacienteRequest request) {
 
-        Paciente paciente = PacienteMapper.toPaciente(request);
+        Paciente paciente = mapper.toPaciente(request);
         Paciente pacienteSalvo = service.salvar(paciente);
-        PacienteResponse pacienteResponse = PacienteMapper.toPacienteResponse(pacienteSalvo);
+        PacienteResponse pacienteResponse = mapper.toPacienteResponse(pacienteSalvo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(pacienteResponse);
     }
@@ -46,20 +55,19 @@ public class PacienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> listarPorId(@PathVariable Long id) {
-        Optional<Paciente> paciente = service.buscarPorId(id);
-
-        if (paciente.isPresent()) {
-            return ResponseEntity.ok().body(paciente.get());
-        }
-
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<PacienteCompletoResponse> listarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id)
+                .map(mapper::toPacienteCompletoResponse)
+                .map(pacienteCompletoResponse -> ResponseEntity.status(HttpStatus.OK).body(pacienteCompletoResponse))
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping
-    public ResponseEntity<Paciente> atualizar(@RequestBody Paciente paciente) {
-        Paciente atualizar = service.salvar(paciente);
-        return ResponseEntity.ok().body(atualizar);
+    @PutMapping("/{id}")
+    public ResponseEntity<List<PacienteResponse>> atualizar(@PathVariable Long id, @RequestBody PacienteRequest request) {
+        Paciente paciente = mapper.toPaciente(request);
+        Paciente pacienteSalvo = service.alterar(id, paciente);
+        PacienteResponse pacienteResponse = mapper.toPacienteResponse(pacienteSalvo);
+        return ResponseEntity.status(HttpStatus.OK).body(List.of(pacienteResponse));
     }
 
     @DeleteMapping("/{id}")
