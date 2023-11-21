@@ -43,6 +43,7 @@ public class SecurityConfig  {
             //    remove .requestMatchers(HttpMethod.POST, "/agenda").hasRole("ADMIN")
             //    .anyRequest().authenticated()
             //)
+            .addFilter(filter -> newCustomAuthenticationFilterConfig(authenticationManager()))
             .build();
     }
 
