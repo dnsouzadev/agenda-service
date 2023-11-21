@@ -1,7 +1,5 @@
 package com.dnsouzadev.agenda.api.request;
 
-import org.hibernate.validator.constraints.br.CPF;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,6 +19,6 @@ public class PacienteRequest {
     private String sobrenome;
     @Email(message = "Email inválido")
     private String email;
-    @CPF(message = "CPF inválido")
+
     private String cpf;
 }
