@@ -57,7 +57,7 @@ class AgendaServiceTest {
 
 
         // act
-        service.salvar(agenda);
+        service.save(agenda);
 
 
         // assertions
@@ -90,7 +90,7 @@ class AgendaServiceTest {
         Mockito.when(pacienteService.buscarPorId(ArgumentMatchers.any())).thenReturn(Optional.empty());
 
         BusinessException businessException = assertThrows(BusinessException.class, () -> {
-            service.salvar(agenda);
+            service.save(agenda);
         });
 
         Assertions.assertThat(businessException.getMessage()).isEqualTo("Paciente não encontrado");

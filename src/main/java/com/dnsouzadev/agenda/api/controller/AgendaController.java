@@ -30,16 +30,16 @@ public class AgendaController {
     private final AgendaMapper mapper;
 
     @GetMapping
-    public ResponseEntity<List<AgendaResponse>> listarTodos() {
-        List<Agenda> agendas = service.listarTodos();
+    public ResponseEntity<List<AgendaResponse>> listAll() {
+        List<Agenda> agendas = service.listAll();
         List<AgendaResponse> agendaResponseList = mapper.toAgendaResponseList(agendas);
 
         return ResponseEntity.ok(agendaResponseList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AgendaResponse> buscarPorId(@PathVariable Long id) {
-        Optional<Agenda> optAgenda = service.buscarPorId(id);
+    public ResponseEntity<AgendaResponse> findById(@PathVariable Long id) {
+        Optional<Agenda> optAgenda = service.findById(id);
 
         if (optAgenda.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -51,8 +51,8 @@ public class AgendaController {
     }
 
     @PostMapping
-    public ResponseEntity<AgendaResponse> salvar(@Valid @RequestBody AgendaRequest agenda) {
-        Agenda agendaSalva = service.salvar(mapper.toAgenda(agenda));
+    public ResponseEntity<AgendaResponse> save(@Valid @RequestBody AgendaRequest agenda) {
+        Agenda agendaSalva = service.save(mapper.toAgenda(agenda));
         AgendaResponse agendaResponse = mapper.toAgendaResponse(agendaSalva);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(agendaResponse);

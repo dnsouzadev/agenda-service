@@ -22,15 +22,15 @@ public class AgendaService {
     private final AgendaRepository repository;
     private final PacienteService pacienteService;
 
-    public List<Agenda> listarTodos() {
+    public List<Agenda> listAll() {
         return repository.findAll();
     }
 
-    public Optional<Agenda> buscarPorId(Long id) {
+    public Optional<Agenda> findById(Long id) {
         return repository.findById(id);
     }
 
-    public Agenda salvar(Agenda agenda) {
+    public Agenda save(Agenda agenda) {
 
         Optional<Paciente> optPaciente = pacienteService.buscarPorId(agenda.getPaciente().getId());
 
